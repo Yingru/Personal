@@ -35,7 +35,7 @@
 </head>
 
 <body>
-    <div id="doc" class="markdown-body container-fluid" style="position: relative;"><h1 id="Working_diary"><a class="anchor hidden-xs" href="#Working_diary" title="Working_diary"><span class="octicon octicon-link"></span></a>Working_diary</h1><p></p><div class="toc"><ul><li><a href="#Working_diary" title="Working_diary">Working_diary</a><ul><li><a href="#2018-07-30" title="2018-07-30">2018-07-30</a></li></ul></li></ul></div><p></p><h2 id="2018-07-30"><a class="anchor hidden-xs" href="#2018-07-30" title="2018-07-30"><span class="octicon octicon-link"></span></a>2018-07-30</h2><ul>
+    <div id="doc" class="markdown-body container-fluid" style="position: relative;"><h1 id="Working_diary"><a class="anchor hidden-xs" href="#Working_diary" title="Working_diary"><span class="octicon octicon-link"></span></a>Working_diary</h1><p></p><div class="toc"><ul><li><a href="#Working_diary" title="Working_diary">Working_diary</a><ul><li><a href="#2018-07-30" title="2018-07-30">2018-07-30</a></li><li><a href="#2018-07-31" title="2018-07-31">2018-07-31</a></li></ul></li></ul></div><p></p><h2 id="2018-07-30"><a class="anchor hidden-xs" href="#2018-07-30" title="2018-07-30"><span class="octicon octicon-link"></span></a>2018-07-30</h2><ul>
 <li>thermal boltzmann distribution</li>
 </ul><pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">Boltzmann_E</span><span class="hljs-params">(E, temp, M)</span>:</span>
     dfdE = np.exp(-E/temp) * np.sqrt(E**<span class="hljs-number">2</span> - M**<span class="hljs-number">2</span>) * E
@@ -59,19 +59,64 @@
         
     popt, pcov = curve_fit(func, p0_bins, dNdp0)
     <span class="hljs-keyword">return</span> popt  <span class="hljs-comment"># array of parameters</span>
-</code></pre></div>
+</code></pre><h2 id="2018-07-31"><a class="anchor hidden-xs" href="#2018-07-31" title="2018-07-31"><span class="octicon octicon-link"></span></a>2018-07-31</h2><ul>
+<li>
+<p>comparing the diffusion induced radiation and absorption process (emitted/absorpted gluon energy): <span class="mathjax"><span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-1225-Frame" tabindex="0" style="position: relative;" data-mathml="<math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;><msub><mi>k</mi><mn>0</mn></msub><mo>&amp;lt;</mo><mi>&amp;#x03BC;</mi><mi>&amp;#x03C0;</mi><mi>T</mi></math>" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-9833" style="width: 5.074em; display: inline-block;"><span style="display: inline-block; position: relative; width: 4.152em; height: 0px; font-size: 122%;"><span style="position: absolute; clip: rect(1.386em 1004.15em 2.615em -999.997em); top: -2.252em; left: 0em;"><span class="mrow" id="MathJax-Span-9834"><span class="msubsup" id="MathJax-Span-9835"><span style="display: inline-block; position: relative; width: 0.976em; height: 0px;"><span style="position: absolute; clip: rect(3.128em 1000.51em 4.152em -999.997em); top: -3.993em; left: 0em;"><span class="mi" id="MathJax-Span-9836" style="font-family: MathJax_Math-italic;">k</span><span style="display: inline-block; width: 0px; height: 3.998em;"></span></span><span style="position: absolute; top: -3.84em; left: 0.515em;"><span class="mn" id="MathJax-Span-9837" style="font-size: 70.7%; font-family: MathJax_Main;">0</span><span style="display: inline-block; width: 0px; height: 3.998em;"></span></span></span></span><span class="mo" id="MathJax-Span-9838" style="font-family: MathJax_Main; padding-left: 0.259em;">&lt;</span><span class="mi" id="MathJax-Span-9839" style="font-family: MathJax_Math-italic; padding-left: 0.259em;">μ</span><span class="mi" id="MathJax-Span-9840" style="font-family: MathJax_Math-italic;">π<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.003em;"></span></span><span class="mi" id="MathJax-Span-9841" style="font-family: MathJax_Math-italic;">T<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.105em;"></span></span></span><span style="display: inline-block; width: 0px; height: 2.257em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.309em; border-left: 0px solid; width: 0px; height: 1.253em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>k</mi><mn>0</mn></msub><mo>&lt;</mo><mi>μ</mi><mi>π</mi><mi>T</mi></math></span></span><script type="math/tex" id="MathJax-Element-1225">k_0 < \mu \pi T</script></span>, where <span class="mathjax"><span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax" id="MathJax-Element-1226-Frame" tabindex="0" style="position: relative;" data-mathml="<math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;><mi>&amp;#x03BC;</mi><mo>=</mo><mn>0.1</mn><mo>,</mo><mn>1</mn></math>" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-9842" style="width: 5.023em; display: inline-block;"><span style="display: inline-block; position: relative; width: 4.101em; height: 0px; font-size: 122%;"><span style="position: absolute; clip: rect(1.437em 1004.05em 2.615em -999.997em); top: -2.252em; left: 0em;"><span class="mrow" id="MathJax-Span-9843"><span class="mi" id="MathJax-Span-9844" style="font-family: MathJax_Math-italic;">μ</span><span class="mo" id="MathJax-Span-9845" style="font-family: MathJax_Main; padding-left: 0.259em;">=</span><span class="mn" id="MathJax-Span-9846" style="font-family: MathJax_Main; padding-left: 0.259em;">0.1</span><span class="mo" id="MathJax-Span-9847" style="font-family: MathJax_Main;">,</span><span class="mn" id="MathJax-Span-9848" style="font-family: MathJax_Main; padding-left: 0.156em;">1</span></span><span style="display: inline-block; width: 0px; height: 2.257em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.309em; border-left: 0px solid; width: 0px; height: 1.191em;"></span></span></nobr><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>μ</mi><mo>=</mo><mn>0.1</mn><mo>,</mo><mn>1</mn></math></span></span><script type="math/tex" id="MathJax-Element-1226">\mu=0.1, 1</script></span></p>
+</li>
+<li>
+<p>getting started with <a href="https://www.chameleoncloud.org/" target="_blank">Chameleon</a>, which is a configurable experimental enviroment for large-scale cloud research.</p>
+<ul>
+<li>
+<p><a href="https://chameleoncloud.readthedocs.io/en/latest/getting-started/index.html" target="_blank">tutorial</a></p>
+<ul>
+<li>create an account -&gt; create or join a project -&gt; start using <code>Chameleon</code></li>
+<li>loggin in through <a href="https://chi.uc.chameleoncloud.org/" target="_blank">UChicago</a></li>
+<li>reserve a node (when you create a reservation for one ot more nodes, only you and other users on your project will be able to use those nodes for the time specific), specify the name, and leasing time</li>
+<li>launch bare-metal instance, specify name, source (OS images), flavor, key pair, lauch process including powering-up, loading the operating system, and booting up</li>
+<li>associating an IP address (click a few button)</li>
+<li>access your instance:</li>
+</ul>
+<pre><code class="bash hljs"><span class="hljs-comment"># change the permission on the file to user read/write only</span>
+chmod 600 yx59chameleonkey.pem
+<span class="hljs-comment"># add the key to your current SSH idenetiy</span>
+ssh-add yx59chameleonkey.pem
+<span class="hljs-comment"># log in to yout Chameleon instance via SSH using usrname@ip_adress</span>
+ssh cc@ip_address
+</code></pre>
+<ul>
+<li><font color="red"> <code>ssh</code> failed, submitted a ticket<br>
+solved</font>: <code>ssh cc@ip_address</code>, the usrname by default is <code>cc</code></li>
+</ul>
+</li>
+<li>
+<p>a few concept:</p>
+<ul>
+<li><code>instance</code>: virtual machine but on bare-metal nodes</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>write a container for HIC_HQ</p>
+<ul>
+<li>trying <code>docker</code> container first</li>
+<li>then <code>singularity</code> container</li>
+<li>in Nersc, you can run docker container with <code>shifter</code> I believe</li>
+</ul>
+</li>
+</ul></div>
     <div class="ui-toc dropup unselectable hidden-print" style="display:none;">
         <div class="pull-right dropdown">
             <a id="tocLabel" class="ui-toc-label btn btn-default" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" title="Table of content">
                 <i class="fa fa-bars"></i>
             </a>
             <ul id="ui-toc" class="ui-toc-dropdown dropdown-menu" aria-labelledby="tocLabel">
-                <div class="toc"><ul class="nav"><li class=""><a href="#Working_diary" title="Working_diary">Working_diary</a><ul class="nav"><li><a href="#2018-07-30" title="2018-07-30">2018-07-30</a></li></ul></li></ul></div><div class="toc-menu"><a class="expand-toggle" href="#">Expand all</a><a class="back-to-top" href="#">Back to top</a><a class="go-to-bottom" href="#">Go to bottom</a></div>
+                <div class="toc"><ul class="nav"><li class=""><a href="#Working_diary" title="Working_diary">Working_diary</a><ul class="nav"><li><a href="#2018-07-30" title="2018-07-30">2018-07-30</a></li><li><a href="#2018-07-31" title="2018-07-31">2018-07-31</a></li></ul></li></ul></div><div class="toc-menu"><a class="expand-toggle" href="#">Expand all</a><a class="back-to-top" href="#">Back to top</a><a class="go-to-bottom" href="#">Go to bottom</a></div>
             </ul>
         </div>
     </div>
     <div id="ui-toc-affix" class="ui-affix-toc ui-toc-dropdown unselectable hidden-print" data-spy="affix" style="top:17px;display:none;"  >
-        <div class="toc"><ul class="nav"><li class=""><a href="#Working_diary" title="Working_diary">Working_diary</a><ul class="nav"><li><a href="#2018-07-30" title="2018-07-30">2018-07-30</a></li></ul></li></ul></div><div class="toc-menu"><a class="expand-toggle" href="#">Expand all</a><a class="back-to-top" href="#">Back to top</a><a class="go-to-bottom" href="#">Go to bottom</a></div>
+        <div class="toc"><ul class="nav"><li class=""><a href="#Working_diary" title="Working_diary">Working_diary</a><ul class="nav"><li><a href="#2018-07-30" title="2018-07-30">2018-07-30</a></li><li><a href="#2018-07-31" title="2018-07-31">2018-07-31</a></li></ul></li></ul></div><div class="toc-menu"><a class="expand-toggle" href="#">Expand all</a><a class="back-to-top" href="#">Back to top</a><a class="go-to-bottom" href="#">Go to bottom</a></div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous" defer></script>
