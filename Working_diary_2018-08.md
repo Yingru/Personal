@@ -1,4 +1,4 @@
-# Working_diary
+# Working_diary_2018-08
 
 [TOC]
 
@@ -879,8 +879,246 @@ salloc -N 1 --image yingruxu/hic_hq -C haswell
 project must be accessed in a shifter image by using its full path /global/project instead of just /project**
 
 
-## 2018-08-22
+## 2018-08-22:2018-08-24
+Todos:
+- [x] finalize the workflow of container, make it not writable
+- [x] try the container in NERSC?
+- [ ] try the slurm coupled with shifter
+- [ ] PHSD project (need to run more events), and modify the paper
+- [ ] I think now it is also not a bad time to finalize what I have learned from the different comparison between two types of energy loss 
+
 ### 1. processing the OSG data
 - first, compare if the container works the same as the previous results, `run95_reproduce_run90`
 - second, compare the LGV-LBT results
 `run94_LGV-vs-LBT`, `run93_LGV-vs-LBT`
+
+### 2. finalize the workflow
+```
+# now all the binary installed in $pkgname/bin, all the non-change data installed in $pkgname/share, all the configure files in $pkgname/results (which is expected to be changed for user case)
+export PATH=$pkgname/bin:$PATH
+export PYTHONPATH=$pkgname/lib/python*/site*....
+export XDG_DATA_HOME=$pkgname/share:$XDG_DATA_HOME
+
+# python can access the XDG standards by
+os.environ.get('XDG_DATA_HOME')
+
+# dockerfile mount to /usr/local/hic_HQ-osg/results
+sudo docker run -v `pwd`:/usr/local/hic_HQ-osg/results hic_hq:v1 python3 run-events_cD.py args.conf 0
+```
+
+### 3. test on NERSC
+```
+# pull the image deom docker
+shifterimg -v pull docker:yingruxu/hic_hq:freestreaming
+
+# check images
+shifterimg images | grep 'yingruxu'
+
+# entering the shifter image
+shifter --image=yingruxu/hic_hq:freestreaming
+echo $PATH
+python3 run-events_cD.py args.conf 0
+
+# run the image (just as docker) 
+shifter --image=yingruxu/hic_hq:freestreaming python3 run-events_cD.py args.conf 0
+
+# run slurm interactive job
+salloc -N 1 -C haswell -p debug --image=yingruxu/hic_hq:freestreaming -t 00:30:00
+shifter python3 run-events_cD.py args.conf 4
+
+# run slurm single job
+#========== singleBatch.sl ========================
+#!/bin/bash
+#SBATCH --image=yingruxu/hic_hq:freestreaming
+#SBATCH --nodes=1
+#SBATCH --partition=regular
+#SBATCH --constaint haswell
+#SBATCH --cpus-per-task=1
+#SBATCH --time 00:30:00
+#SBATCH --license=cscratch1
+
+job=$SLURM_JOB_ID
+srun shifter python3 run-events_cD.py args.conf $job
+```
+
+- note, in `slurm`, specify the filesystem by `-L cscratch1` is able to make the job start only is the filesystem is available, in which way we can prevent some failures or descreased performance
+- for submit `shifter` job, you need to specify the licence, as the shifter images are stores in `Cori` global scratch filesystem, and in `Edison` scaatch3 filesytem.
+
+## 2018-08-24
+- submitted a job on OSG, only if I can get all the soft and hard results done, and do a new calibration 
+    - [x] local shifter image done
+    - [x] local design-wrapper done
+    - [x] slrum interactively done
+    - [ ] slrum a single node, one cpu per task
+
+
+- how can I get the task ID in the output or error file name for a batch job?
+> if you want seperate the output by task, you will need to build a script containing this specification.
+> ```
+> ## ====== test file =====
+> #!/bin/sh
+> echo begin_test
+> srun -o out_%j_%t hostname
+> ## =======================
+>
+> sbatch -n7 -o out_%j test  # submitted batch job 65541
+> 
+> ls -l out*
+> out_65541, out_65541_0, out_65541_1, out_65541_2 ...
+> 
+> cat out_65541  # begin_test
+> 
+> cat out_65542  # tdev2
+> 
+>
+> ```
+
+
+- [x] step 0: interactively salloc
+- [x] step 1: partition=debug full events, shifter no srun
+- [x] step 2: partition=regular full events, shifter no srun
+- [ ] step 3: partition=regular full events, srun -n 32 shifter ? (not passing?)
+
+
+- two ideas, use taskfarmer, which does not have srun
+- but then hw to proceed??
+
+```
+# interactively but with more cores??
+#Wait for it to complete
+salloc -N 2 -C haswell -p regular -A ntrain --reservation=sc17_shifter --image <mydockerid>/hellompi:latest
+# Wait for prepare_compilation_report
+# Cori has 32 physical cores per node with 2 hyper-threads per core.  
+# So you can run up to 64 tasks per node.
+srun -N 2 -n 128 shifter /app/hello
+
+```
+
+## 2018-08-26
+1. test locally on NERSC
+- `nersc/install` have some problem loading frzout (which I don't understand), should figure it out later
+- `install_frzout` do a second run up
+- `design-wrapper` load `$PATH, $LD_LIBRATY_PATH, $XDG_DATA_HOME`
+- `result_local` run a test run
+- `taskfarmer` tested as well, failed even with original workflow (?!) why, is there any problem with taskfarmer?????! I am really pissed.
+
+
+## 2018-08-27
+1. PHSD project, debugging it??
+2. processing OSG data?
+3. provide the Indian group the information for nucleus?
+- `trento/src/collision.cxx`
+- `for (auto a in nucleus_A), output a; for (auto b in nucleus_B), output b`
+- add random seed generator also for the nucleus position 
+
+```cpp
+// ============== nucleus.h ========================
+// stores an ensemble of nucleons and randomly samples their positions
+// interator interface through: begin(), end()
+class Nucleus {
+  public: 
+      static NucleusPtr create(const std::string& species, double nucleon_dmin=0);
+      virtual double radius() const=0;
+      void sample_nucleons(double offset);
+      size_type size() const noexecept;
+      iterator begin() noexcept;
+      iterator end() noexecept;
+      const_iterator cbegin();
+      const_iterator cend();    
+}
+
+class Nucleon{
+  public: 
+      double x() const;
+      doubel y() const;
+      double z() const;
+      bool is_participant() const;
+}
+```
+- generate initial nucleus position A and B
+```
+./trento Pb Pb 10 --cross-section 7.0 --normalization 18.5 -p 0.0 
+--fluctuation 0.9 --nucleon-width 0.96  --nucleon-min-dist 1.280 
+--grid-step 0.1 --grid-max 15.05 --output initial_minBias.hdf5
+
+
+# b=6 (1234), b=2 (12345), b=15 (123456)
+./trento Pb Pb 100 --cross-section 7.0 --normalization 18.5 -p 0.0 \
+--fluctuation 0.9 --nucleon-width 0.96  --nucleon-min-dist 1.280 \
+--grid-step 0.1 --grid-max 15.05 --b-min 8.0 --b-max 8.0 \
+--output initial_b8.hdf5 --random-seed 1234
+```
+
+## 2018-08-28
+1. possible problem for NERSC 
+`srun -n 20` 
+
+2. calculate the path towards equilibrium for both Boltzmann and Langevin dynamics
+3. `python setup.py build_ext -i` ?? why should i spend so much time to debug the old code???
+
+
+## 2018-08-30
+1. verify the workflow for taskfarmer on NERSC, it seems working right now!
+    - create a dockerfile, upload to dockerhub and build docker image
+    - pull shifter image from docker to NERSC (note, NERSC cannot delete docker image, therefore, you have to rename the docker image everytime you pull from dockerup)
+    ```
+    # pull image down on Cori from dockerhub
+    shifterimg -v pull docker:yingruxu/hic_hq:latest
+    shifterimg images | grep 'yingruxu'
+    ```
+    - create job-wrapper file, taskfarmer submit file
+    ```
+    # ======= run-wrapper ===========
+    #!/bin/bash
+
+    workdir=$CSCRATCH/PbPb5020_taskfarmer/results_shifter_verify_20180830
+    cd $workdir
+    shifter python3 $workdir/run-events_cD.py $workdir/args.conf $1
+
+    # ======= generate task ==========
+    #!/bin/bash
+
+    ntasks=10
+
+    for (( n = 0; n < $ntasks; ++n )); do
+      echo bash run-wrapper $n >> tasks
+    done
+    
+    
+    # ====== taskfarmer.sl =============
+    #!/bin/bash
+    #SBATCH --image=yingruxu/hic_hq:freestreaming
+    #SBATCH --nodes=2
+    #SBATCH --partition=regular
+    #SBATCH --constraint haswell 
+    #SBATCH --cpus-per-task=64
+    #SBATCH --time 00:30:00
+    #SBATCH --license=cscratch1 
+    #SBATCH --mail-type ALL
+    #SBATCH --mail-user yx59@duke.edu
+
+    export PATH=$PATH:/usr/common/tig/taskfarmer/1.5/bin:$(pwd)
+    export THREADS=32
+
+    cd $CSCRATCH/PbPb5020_taskfarmer/results_shifter_verify_20180830
+
+    runcommands.sh tasks
+
+    
+    ```
+    - submit jobs
+    ```
+    module load taskfarmer
+    sbtach taskfarmer.sl
+    ```
+
+2. debug the `srun` error? Is is because I have the sameName intermediate files?
+    if I can get the Freestream.h5 files back, which would be this is the true
+    <font color='red'> I think I could just give up 
+    does not fix it at all
+    and also, I probably need to use the MICH version??    
+    </font>
+    
+    
+3. processing the OSG data (find a bug, now fixed)
+4. need to run one set of PbPb 2.76 TeV data and check how good the medium is??
